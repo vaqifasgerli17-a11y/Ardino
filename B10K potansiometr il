@@ -1,0 +1,37 @@
+const int potPin  = A0;
+const int ledR    = 11;
+const int ledG    = 10;
+const int ledB    = 9;  // ← bunu əlavə et
+void setup() {
+  pinMode(ledR, OUTPUT);
+  pinMode(ledG, OUTPUT);
+  pinMode(ledB, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int potVal = analogRead(potPin);          // 0–1023
+  int brightness = map(potVal, 0, 1023, 0, 255);  // 0–255
+
+  // Aralıqlara bölürük: 0–340 → R, 341–682 → G, 683–1023 → B
+  if (potVal < 341) {
+    int b = map(potVal, 0, 340, 0, 255);
+    analogWrite(ledR, b);
+    analogWrite(ledG, 0);
+    analogWrite(ledB, 0);
+  } else if (potVal < 683) {
+    int b = map(potVal, 341, 682, 0, 255);
+    analogWrite(ledR, 0);
+    analogWrite(ledG, b);
+    analogWrite(ledB, 0);
+  } else {
+    int b = map(potVal, 683, 1023, 0, 255);
+    analogWrite(ledR, 0);
+    analogWrite(ledG, 0);
+    analogWrite(ledB, b);
+  }
+
+  Serial.print("Pot: "); Serial.print(potVal);
+  Serial.print("  Parlaqliq: "); Serial.println(brightness);
+  delay(50);
+}
