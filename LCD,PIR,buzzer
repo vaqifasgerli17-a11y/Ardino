@@ -1,0 +1,51 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// LCD адрес (если не работает — поменяй на 0x3F)
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+// Пины
+int pirPin = 2;
+int buzzer = 9;
+
+void setup() {
+  pinMode(pirPin, INPUT);
+  pinMode(buzzer, OUTPUT);
+
+  lcd.init();
+  lcd.backlight();
+
+  lcd.print("System Start");
+  delay(2000);
+  lcd.clear();
+
+  // чтобы не было ложного срабатывания
+  digitalWrite(buzzer, LOW);
+}
+
+void loop() {
+  int motion = digitalRead(pirPin);
+
+  if (motion == HIGH) {
+    // движение есть
+    lcd.setCursor(0, 0);
+    lcd.print("MOTION DETECTED!");
+    lcd.setCursor(0, 1);
+    lcd.print("ALARM ACTIVE   ");
+
+    // буззер пищит
+    digitalWrite(buzzer, HIGH);
+  }
+  else {
+    // движения нет
+    lcd.setCursor(0, 0);
+    lcd.print("No Motion      ");
+    lcd.setCursor(0, 1);
+    lcd.print("System Safe    ");
+
+    // буззер выключен
+    digitalWrite(buzzer, LOW);
+  }
+
+  delay(200);
+}
